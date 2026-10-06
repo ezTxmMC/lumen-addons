@@ -3,6 +3,7 @@
     {
       "id": "c",
       "name": "C",
+      "indentUnit": 4,
       "extensions": [
         ".c",
         ".h"

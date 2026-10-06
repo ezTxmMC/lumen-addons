@@ -183,6 +183,7 @@
         }
       ],
       "indentUnit": 4,
+      "indentTabs": true,
       "run": [
         {
           "label": "go run",

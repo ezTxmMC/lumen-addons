@@ -375,6 +375,7 @@
       "identifier": "^[A-Za-z_][\\w.-]*",
       "operators": "^(?:[:?+!]?=|::=|\\$[@<^*?%+|]|\\$\\(|\\)|[|;])",
       "indentUnit": 4,
+      "indentTabs": true,
       "snippets": [
         {
           "label": "rule",

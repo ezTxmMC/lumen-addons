@@ -1,0 +1,128 @@
+{
+  "id": "addon.formatter",
+  "name": "Formatter",
+  "version": "1.0.0",
+  "description": "Formats and checks code in the Pureline style (Java, JavaScript, TypeScript, Go, Crystal) and uses Prettier when a project is configured for it. Ships with program code.",
+  "author": "ezTxmMC",
+  "icon": "Fm",
+  "color": "#6c8cff",
+  "category": "tool",
+  "license": "AGPL-3.0-or-later",
+  "keywords": ["formatter", "format", "pureline", "prettier", "linter", "checker", "style"],
+  "minAppVersion": "0.7.0",
+  "settings": [
+    {
+      "key": "engine",
+      "label": "Formatter-Engine",
+      "type": "select",
+      "default": "auto",
+      "section": "Engine",
+      "hint": "Automatisch: eine .pureline-Datei gewinnt, danach eine Prettier-Konfiguration, ohne beides gilt der Pureline-Standard. Pureline und Prettier erzwingen eine Engine.",
+      "choices": [
+        { "value": "auto", "label": "Automatisch" },
+        { "value": "pureline", "label": "Immer Pureline" },
+        { "value": "prettier", "label": "Immer Prettier" }
+      ],
+      "i18n": {
+        "en": {
+          "label": "Formatter engine",
+          "section": "Engine",
+          "hint": "Automatic: a .pureline file wins, then a Prettier config; with neither the Pureline defaults apply. Pureline and Prettier force one engine.",
+          "choices": { "auto": "Automatic", "pureline": "Always Pureline", "prettier": "Always Prettier" }
+        }
+      }
+    },
+    {
+      "key": "prettierPath",
+      "label": "Pfad zu Prettier",
+      "type": "path",
+      "pathKind": "file",
+      "default": "",
+      "placeholder": "node_modules/.bin/prettier oder prettier im PATH",
+      "section": "Engine",
+      "hint": "Leer lassen: zuerst node_modules/.bin/prettier des Projekts, dann prettier aus dem PATH.",
+      "i18n": {
+        "en": {
+          "label": "Path to Prettier",
+          "placeholder": "node_modules/.bin/prettier or prettier on the PATH",
+          "section": "Engine",
+          "hint": "Leave empty: the project's node_modules/.bin/prettier first, then prettier from the PATH."
+        }
+      }
+    },
+    {
+      "key": "defaultIndent",
+      "label": "Standard-Einrückung",
+      "type": "select",
+      "default": "4",
+      "section": "Pureline",
+      "hint": "Gilt nur ohne .pureline-Datei. Go nutzt immer Tabs, Crystal immer zwei Leerzeichen.",
+      "choices": [
+        { "value": "editor", "label": "Wie im Editor" },
+        { "value": "2", "label": "2 Leerzeichen" },
+        { "value": "4", "label": "4 Leerzeichen" }
+      ],
+      "i18n": {
+        "en": {
+          "label": "Default indentation",
+          "section": "Pureline",
+          "hint": "Only applies without a .pureline file. Go always uses tabs, Crystal always two spaces.",
+          "choices": { "editor": "Like the editor", "2": "2 spaces", "4": "4 spaces" }
+        }
+      }
+    },
+    {
+      "key": "checkOnType",
+      "label": "Pureline-Prüfung während des Tippens",
+      "type": "toggle",
+      "default": "true",
+      "section": "Pureline",
+      "hint": "Zeigt Verstöße gegen die Pureline-Regeln als Hinweise im Editor. Projekte, die Prettier nutzen, werden nicht geprüft.",
+      "i18n": {
+        "en": {
+          "label": "Pureline checker while typing",
+          "section": "Pureline",
+          "hint": "Shows violations of the Pureline rules as diagnostics in the editor. Projects that use Prettier are not checked."
+        }
+      }
+    },
+    {
+      "key": "showStatus",
+      "label": "Engine in der Statusleiste anzeigen",
+      "type": "toggle",
+      "default": "true",
+      "section": "Anzeige",
+      "hint": "Zeigt, welche Engine die aktive Datei formatiert, zum Beispiel Pureline oder Prettier.",
+      "i18n": {
+        "en": {
+          "label": "Show the engine in the status bar",
+          "section": "Display",
+          "hint": "Shows which engine formats the active file, for example Pureline or Prettier."
+        }
+      }
+    }
+  ],
+  "commands": [
+    {
+      "id": "format.explain",
+      "title": "Formatter: Aktive Konfiguration anzeigen",
+      "category": "Formatter",
+      "icon": "info",
+      "i18n": { "en": { "title": "Formatter: Show active configuration", "category": "Formatter" } }
+    },
+    {
+      "id": "pureline.init",
+      "title": "Formatter: .pureline-Datei erstellen",
+      "category": "Formatter",
+      "icon": "file-plus",
+      "i18n": { "en": { "title": "Formatter: Create .pureline file", "category": "Formatter" } }
+    },
+    {
+      "id": "pureline.rules",
+      "title": "Formatter: Pureline-Regelkatalog anzeigen",
+      "category": "Formatter",
+      "icon": "list",
+      "i18n": { "en": { "title": "Formatter: Show Pureline rule catalog", "category": "Formatter" } }
+    }
+  ]
+}

@@ -317,6 +317,9 @@ What else `ctx` offers:
 | `ctx.storage.dir()` | a folder of the extension's own for larger files (downloads, caches); removed with the extension |
 | `ctx.views.open(id, instance, title)`, `ctx.views.refresh(id, instance?)` | tabs of editor views |
 | `ctx.locale()`, `ctx.appVersion`, `ctx.openExternal(url)`, `ctx.log(…)` | the interface language, Lumen's version, links, logging |
+| `ctx.formatters.register(id, provider, { priority })` | formats documents — see *Formatters, checkers and scanner rules* |
+| `ctx.diagnostics.register(id, provider)` | checks documents; the findings show up like a language server's |
+| `ctx.security.addRules(rules)` | extra rules for Lumen's security scanner, as data |
 
 Ids of views, commands and status items are lower-case (`open-changes`).
 Settings come in the types `text`, `number` (`min`/`max`/`step`), `toggle`,
@@ -355,6 +358,64 @@ bundle.
 defaults built in), templates per era and project kinds. Its rules are pure
 modules with tests — `node extensions/minecraft/test.mjs` offline,
 `--network` against the live sources.
+
+### Formatters, checkers and scanner rules
+
+Lumen formats nothing on its own, and the core knows no code style. A formatter
+is an extension that registers a provider; `ctx.formatters.register` takes an id,
+the provider and an optional `priority` (higher is asked first):
+
+```js
+export function activate(ctx) {
+  ctx.formatters.register('main', {
+    supports: ({ path, languageId }) => languageId === 'typescript',
+    async format({ path, text, range, options, workspace }) {
+      // options: { tabWidth, useTabs, endOfLine, trimTrailingWhitespace, insertFinalNewline }
+      const result = await ctx.exec('mytool', ['--stdin'], { input: text })
+      return result.code === 0 ? { text: result.stdout, engine: 'mytool 1.0' } : null   // null: leave it
+    },
+  })
+  ctx.diagnostics.register('lint', {
+    supports: ({ languageId }) => languageId === 'typescript',
+    async check({ path, text }) {
+      return [{ line: 0, column: 0, severity: 'warning', message: 'Example', code: 'EX-001', source: 'Example' }]
+    },
+  })
+}
+```
+
+*Format Document* (and *format on save*) asks the extensions' formatters first —
+the first whose `supports` says yes formats the file, `null` means "leave it
+alone" — then those of add-ons of the window (`Addon.formatters` with
+`phase: 'replace'`), and only when none claims the file, the language server.
+`phase: 'after'` formatters polish whatever came out, the blank lines between
+the blocks of a POM, say. A formatter that throws or takes longer than 30 s is
+skipped with a message and the language server takes over. The result is applied
+as the smallest set of line edits, so cursor and folds stay where they are.
+
+A checker returns `{ line, column, endLine?, endColumn?, severity, message,
+code?, source?, suggestion? }`; Lumen asks it when the text has settled for a
+moment, when the tab changes and when add-ons change.
+
+The same seam exists for add-ons of the window: `Addon.formatters`,
+`Addon.checkers` and `ctx.registerFormatter` / `ctx.registerChecker` take
+functions with the same shapes. `Addon.defaults` names the theme and the icon
+pack the app falls back on; the add-ons that ship with Lumen enter the registry
+through `src/addons/register.ts` — the same `registry.register` an extension's
+window code uses — and the app's own code imports none of them
+(`npm run check:core` enforces that).
+
+A language states its own editor conventions: `LanguageSpec.format`
+(`{ tabWidth, useTabs }`) in code, `indentUnit` and `indentTabs` in an
+`addon.json`. A language server config can derive its settings from the editor's
+choices with `LspConfig.formatSettings`. Style rules — quotes, semicolons, print
+width — are never a core setting; a formatter reads them from the project.
+
+`ctx.security.addRules` adds rules to the security scanner (see the main
+README): each is data — `{ id, title, severity, targets, pattern, message? }`
+with `targets` among `command`, `extension` and `project` and `pattern` a
+regular expression matched per line. Patterns with nested quantifiers are
+refused.
 
 ## The check before publishing
 

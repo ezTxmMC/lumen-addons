@@ -3,6 +3,7 @@
     {
       "id": "cpp",
       "name": "C++",
+      "indentUnit": 4,
       "extensions": [
         ".cpp",
         ".cc",
