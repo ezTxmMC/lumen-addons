@@ -27,6 +27,11 @@ Browse and edit databases directly in Lumen — files and servers:
   statement; the results appear below.
 - **Export** a table or a result as CSV or JSON.
 
+**Scopes.** A connection is either *application-wide* (stored in Lumen, available in every window) or
+*project-wide* (stored in `.lumen/database-connections.json` of the open folder, so it can be committed and
+shared; the *Available in* field of the form appears when a folder is open). Passwords are never part of that
+file — each person is asked once or saves it in their own key store. Switching the scope moves the connection.
+
 Passwords are stored encrypted in the system keychain, never in the settings. If you prefer not
 to save a password, you are asked for it when connecting.
 

@@ -347,7 +347,7 @@ for what only lives there: project templates whose fields load their choices
 over the network and whose files are computed, project kinds with a `detect`,
 snippets and commands with an `activate(ctx)`. The build bundles it into
 `code.renderer`; it exports `addon(lumen)` and returns the parts of an add-on.
-Everything from Lumen comes through `lumen` (`src/core/extensions/renderer-api.ts`):
+Everything from Lumen comes through `lumen` (`src/core/extensions/integration/renderer-api.ts`):
 translation over the extension's own message tables, `net.fetchJson/fetchText`,
 the project helpers, the editor, dialogs and settings. The source never
 imports the app — only `import type` from `../../src/…`, which vanishes in the
@@ -450,7 +450,7 @@ name one instead:
 | `jsx` | the language's own highlighting plus JSX tags (React) |
 
 `src/core/user-addons/tokenizers.ts` holds the registry,
-`src/addons/lib/builtin-tokenizers.ts` the names. An unknown name is an error
+`src/addons/lib/tokenizers/builtin-tokenizers.ts` the names. An unknown name is an error
 in `npm run check:extensions`, so a typo cannot quietly cost a language its
 colours.
 

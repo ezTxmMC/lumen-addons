@@ -20,6 +20,7 @@ export default {
     redis: 'Sleutels en waarden', mongo: 'Documenten en collecties',
   },
   status: { idle: 'Niet verbonden', connecting: 'Verbinden …', connected: 'Verbonden', error: 'Verbinding mislukt' },
+  scope: { app: 'Overal (deze applicatie)', project: 'Project (gedeeld via .lumen/)', tag: 'Project' },
   field: {
     name: 'Naam', file: 'Bestand', fileHint: 'Absoluut pad, of relatief ten opzichte van de geopende map.', host: 'Host', port: 'Poort',
     user: 'Gebruiker', password: 'Wachtwoord', passwordKeep: 'ongewijzigd', database: 'Database',
@@ -34,6 +35,7 @@ export default {
     urlHint: 'Optioneel — vervangt de velden hierboven die erin voorkomen. Het wachtwoord blijft in het wachtwoordveld.',
     ssl: 'TLS', sslMode: { off: 'Uit', require: 'Versleuteld, certificaat niet gecontroleerd', verify: 'Versleuteld en gecontroleerd' },
     sslCa: 'CA-certificaat (bestand)', readOnly: 'Alleen-lezen', savePassword: 'Wachtwoord opslaan in de sleutelbos van het systeem',
+    scope: 'Beschikbaar in', scopeHint: 'Projectverbindingen worden zonder wachtwoorden opgeslagen in .lumen/database-connections.json van de geopende map.',
   },
   connection: {
     pickType: 'Soort database', addTitle: 'Nieuwe {type}-verbinding', editTitle: '“{name}” bewerken', save: 'Opslaan',

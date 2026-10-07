@@ -14,7 +14,7 @@
  * is flattened to `section.key` once.
  */
 
-import type { MessageTables } from '../../../src/core/extensions/renderer-api';
+import type { MessageTables } from '../../../src/core/extensions/integration/renderer-api';
 
 interface Tree {
   [key: string]: string | Tree;

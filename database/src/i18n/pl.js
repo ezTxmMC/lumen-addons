@@ -20,6 +20,7 @@ export default {
     redis: 'Klucze i wartości', mongo: 'Dokumenty i kolekcje',
   },
   status: { idle: 'Nie połączono', connecting: 'Łączenie …', connected: 'Połączono', error: 'Nie udało się połączyć' },
+  scope: { app: 'Wszędzie (ta aplikacja)', project: 'Projekt (współdzielone przez .lumen/)', tag: 'Projekt' },
   field: {
     name: 'Nazwa', file: 'Plik', fileHint: 'Ścieżka bezwzględna lub względna wobec otwartego folderu.', host: 'Host', port: 'Port',
     user: 'Użytkownik', password: 'Hasło', passwordKeep: 'bez zmian', database: 'Baza danych',
@@ -34,6 +35,7 @@ export default {
     urlHint: 'Opcjonalnie — zastępuje pola powyżej, które zawiera. Hasło pozostaje w polu hasła.',
     ssl: 'TLS', sslMode: { off: 'Wyłączone', require: 'Szyfrowane, bez sprawdzania certyfikatu', verify: 'Szyfrowane i sprawdzane' },
     sslCa: 'Certyfikat CA (plik)', readOnly: 'Tylko do odczytu', savePassword: 'Zapisz hasło w pęku kluczy systemu',
+    scope: 'Dostępne w', scopeHint: 'Połączenia projektu są zapisywane bez haseł w pliku .lumen/database-connections.json otwartego folderu.',
   },
   connection: {
     pickType: 'Rodzaj bazy danych', addTitle: 'Nowe połączenie {type}', editTitle: 'Edytuj „{name}”', save: 'Zapisz',

@@ -15,12 +15,19 @@
 import { DEFAULT_PORTS, FILE_TYPES } from './connections.js';
 
 /** The fields of the connection form for one type, filled with what is known. */
-export function fieldsFor(t, type, known = {}) {
+export function fieldsFor(t, type, known = {}, { projectOpen = false } = {}) {
   const text = (id, extra = {}) => ({ id, label: t(`field.${id}`), value: known[id] === undefined ? '' : String(known[id]), ...extra });
   const name = text('name', { required: true, value: known.name ?? '' });
+  const scope = projectOpen || known.scope === 'project'
+    ? [{
+      id: 'scope', label: t('field.scope'), type: 'select', value: known.scope === 'project' ? 'project' : 'app', hint: t('field.scopeHint'),
+      choices: ['app', 'project'].map((value) => ({ value, label: t(`scope.${value}`) })),
+    }]
+    : [];
   if (FILE_TYPES.includes(type)) {
     return [
       name,
+      ...scope,
       text('file', { required: true, mono: true, placeholder: type === 'h2' ? '/path/to/data.mv.db' : '/path/to/data.sqlite', hint: t('field.fileHint') }),
       ...(type === 'h2' ? [
         text('user', { value: known.user ?? 'sa' }),
@@ -31,6 +38,7 @@ export function fieldsFor(t, type, known = {}) {
   }
   return [
     name,
+    ...scope,
     text('host', { placeholder: 'localhost' }),
     text('port', { placeholder: String(DEFAULT_PORTS[type] ?? '') }),
     text('user', { placeholder: type === 'mssql' ? 'sa' : '' }),
@@ -60,6 +68,7 @@ export function fromAnswer(t, type, answer, known = {}) {
   if ('ssl' in answer) {
     connection.ssl = answer.ssl || 'off';
   }
+  connection.scope = answer.scope === 'project' ? 'project' : 'app';
   connection.readOnly = answer.readOnly === 'true';
   connection.savePassword = FILE_TYPES.includes(type) ? true : answer.savePassword !== 'false';
   return connection;

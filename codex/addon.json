@@ -81,12 +81,12 @@
     {
       "id": "codex-project",
       "name": "Codex Projekt",
-      "description": "AGENTS.md with commands and conventions for Codex.",
+      "description": "AGENTS.md, an example Codex prompt and a project config.toml.",
       "kindId": "codex",
       "icon": "Cx",
       "color": "#10a37f",
       "open": "AGENTS.md",
-      "next": "Start Codex from the task list.",
+      "next": "Start Codex from the task list; try /prompts:explain-file in the chat.",
       "fields": [
         {
           "id": "description",
@@ -108,6 +108,14 @@
         {
           "path": "AGENTS.md",
           "content": "# {{name}}\n\n{{description}}\n\n## Commands\n\n```sh\n{{commands}}\n```\n\n## Conventions\n\n- Small, reviewable changes\n- Run the tests before finishing\n"
+        },
+        {
+          "path": ".codex/prompts/explain-file.md",
+          "content": "---\ndescription: Explain a file\nargument-hint: FILE=<path> [FOCUS=<topic>]\n---\nRead $FILE and explain what it does, how it fits into {{name}}, and anything surprising. Focus on: $FOCUS\n"
+        },
+        {
+          "path": ".codex/config.toml",
+          "content": "# Project settings for Codex (read for trusted projects).\n# model_reasoning_effort = \"medium\"\n# approval_policy = \"never\"\n\n[sandbox_workspace_write]\nnetwork_access = false\n"
         }
       ]
     }

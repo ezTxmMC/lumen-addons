@@ -14,7 +14,7 @@
  * re-implemented, messages in the chosen language.
  */
 
-import type { RendererApi } from '../../../src/core/extensions/renderer-api';
+import type { RendererApi } from '../../../src/core/extensions/integration/renderer-api';
 import type { ProjectContext } from '../../../src/core/types';
 
 function slugify(name: string): string {

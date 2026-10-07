@@ -9,7 +9,7 @@
     {
       "id": "claude-code-project",
       "name": "Claude Code Projekt",
-      "description": "CLAUDE.md, settings and a slash command for Claude Code.",
+      "description": "CLAUDE.md, settings, a subagent and slash commands for Claude Code.",
       "icon": "Cc",
       "color": "#d97757",
       "open": "CLAUDE.md",
@@ -37,11 +37,19 @@
         },
         {
           "path": ".claude/settings.json",
-          "content": "{\n  \"permissions\": {\n    \"allow\": [],\n    \"deny\": [\"Read(./.env)\"]\n  }\n}\n"
+          "content": "{\n  \"permissions\": {\n    \"allow\": [],\n    \"ask\": [],\n    \"deny\": [\"Read(./.env)\"]\n  }\n}\n"
         },
         {
           "path": ".claude/commands/review.md",
           "content": "---\ndescription: Review the changes in the working directory\n---\n\nReview the current changes (`git diff`) for bugs, missing tests and unclear names. Summarize findings by severity.\n"
+        },
+        {
+          "path": ".claude/commands/explain.md",
+          "content": "---\ndescription: Explain a file or topic\nargument-hint: <file or topic>\n---\n\nExplain $ARGUMENTS in this project: what it does, how it fits in, and what to watch out for. Keep it short.\n"
+        },
+        {
+          "path": ".claude/agents/reviewer.md",
+          "content": "---\nname: reviewer\ndescription: Reviews changes for bugs, missing tests and unclear code. Use after larger edits.\ntools: Read, Grep, Glob, Bash\nmodel: sonnet\n---\n\nYou are a strict code reviewer. Read the changes (`git diff`), look for bugs, risky assumptions and missing tests, and report findings by severity. Do not change files.\n"
         }
       ]
     }

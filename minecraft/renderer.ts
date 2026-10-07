@@ -17,7 +17,7 @@
  * build and run tasks, snippets, and commands to refresh the versions.
  */
 
-import type { RendererApi, RendererAddon } from '../../src/core/extensions/renderer-api';
+import type { RendererApi, RendererAddon } from '../../src/core/extensions/integration/renderer-api';
 import type { AddonContext, Command } from '../../src/core/types';
 import { MINECRAFT_KINDS } from './src/kinds';
 import { lumen, setLumen, t, useStore, versions } from './src/lumen';

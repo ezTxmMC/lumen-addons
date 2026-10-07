@@ -38,7 +38,7 @@ export function createActions({ ctx, t, connections, sessions }) {
     let values = known;
     for (;;) {
       const title = known.id ? t('connection.editTitle', { name: known.name }) : t('connection.addTitle', { type: t(`type.${type}`) });
-      const answer = await ctx.ui.input(title, fieldsFor(t, type, values), { submitLabel: t('connection.save') });
+      const answer = await ctx.ui.input(title, fieldsFor(t, type, values, { projectOpen: connections.hasProject() }), { submitLabel: t('connection.save') });
       if (!answer) {
         return null;
       }

@@ -1,8 +1,8 @@
 {
   "id": "ext.claude-code",
   "name": "Claude Code",
-  "version": "2.1.4",
-  "description": "Claude Code as a chat agent: models straight from the Claude Code CLI, effort per model, streaming, modes, resumable sessions, images, plan and cost — with allow/deny for every action. Ships executable code.",
+  "version": "2.2.0",
+  "description": "Claude Code as a chat agent: CLI models and slash commands, compact/rewind/fork/export, context and cost meter, subagents, hooks, plugins, skills, permission rules and profiles — with allow/deny for every action. Ships executable code.",
   "author": "Lumen",
   "icon": "Cc",
   "color": "#d97757",
@@ -16,7 +16,7 @@
     "agent",
     "cli"
   ],
-  "minAppVersion": "0.5.2",
+  "minAppVersion": "0.7.0",
   "settings": [
     {
       "key": "claudePath",
@@ -223,6 +223,14 @@
       "hint": "Off: conversations are not stored in ~/.claude and cannot be resumed later."
     },
     {
+      "key": "fileCheckpoints",
+      "label": "Back up files for rewind",
+      "type": "toggle",
+      "section": "Chat",
+      "default": "true",
+      "hint": "Claude copies files before changing them, so \"Rewind\" in the chat's menu can restore them."
+    },
+    {
       "key": "allowedTools",
       "label": "Tools allowed without asking",
       "type": "textarea",
@@ -243,6 +251,75 @@
       "hint": "One rule per line. Denied tools are not available to Claude at all."
     },
     {
+      "key": "askTools",
+      "label": "Tools that always ask",
+      "type": "textarea",
+      "section": "Permissions",
+      "rows": 3,
+      "default": "",
+      "placeholder": "Bash(git push:*)\nEdit(./migrations/**)",
+      "hint": "One rule per line. These ask even in modes that would allow them (permission rules \"ask\")."
+    },
+    {
+      "key": "toolset",
+      "label": "Built-in tools",
+      "type": "select",
+      "section": "Permissions",
+      "default": "auto",
+      "hint": "Which of Claude Code's own tools exist at all. Read-only leaves Claude without Edit, Write and Bash.",
+      "choices": [
+        {
+          "value": "auto",
+          "label": "All tools"
+        },
+        {
+          "value": "readonly",
+          "label": "Read-only (Read, Grep, Glob, web, subagents)"
+        },
+        {
+          "value": "custom",
+          "label": "Only the tools listed below"
+        }
+      ]
+    },
+    {
+      "key": "customTools",
+      "label": "Tool list",
+      "type": "textarea",
+      "section": "Permissions",
+      "rows": 3,
+      "default": "Read\nGrep\nGlob\nBash",
+      "placeholder": "Read\nGrep\nGlob\nBash",
+      "hint": "One tool name per line.",
+      "when": "toolset=custom"
+    },
+    {
+      "key": "sandbox",
+      "label": "Sandbox",
+      "type": "select",
+      "section": "Permissions",
+      "default": "auto",
+      "hint": "Runs Bash in Claude Code's sandbox (where the platform supports it).",
+      "choices": [
+        {
+          "value": "auto",
+          "label": "As set in Claude Code"
+        },
+        {
+          "value": "on",
+          "label": "On"
+        },
+        {
+          "value": "on-auto",
+          "label": "On, run sandboxed commands without asking"
+        },
+        {
+          "value": "off",
+          "label": "Off"
+        }
+      ]
+    },
+    {
       "key": "additionalDirectories",
       "label": "More folders",
       "type": "textarea",
@@ -259,6 +336,54 @@
       "section": "Permissions",
       "default": "false",
       "hint": "Warning: in this mode Claude runs every command and change without asking. Use only in isolated environments."
+    },
+    {
+      "key": "customAgents",
+      "label": "Subagents",
+      "type": "textarea",
+      "section": "Extensions",
+      "rows": 4,
+      "default": "",
+      "placeholder": "reviewer | Reviews code for bugs | You are a strict code reviewer. Report problems by severity. | Read,Grep,Glob | sonnet",
+      "hint": "One per line: name | description | prompt | tools | model. Tools comma-separated (empty: all), model an alias like sonnet (empty: inherit), \\n in the prompt is a line break. JSON like --agents works too. Used through the Task tool, shown nested in the chat."
+    },
+    {
+      "key": "pluginDirs",
+      "label": "Plugins",
+      "type": "textarea",
+      "section": "Extensions",
+      "rows": 2,
+      "default": "",
+      "placeholder": "~/plugins/my-plugin",
+      "hint": "Folders of local Claude Code plugins (skills, commands, agents, hooks, MCP servers), one per line."
+    },
+    {
+      "key": "skills",
+      "label": "Skills",
+      "type": "textarea",
+      "section": "Extensions",
+      "rows": 2,
+      "default": "",
+      "placeholder": "all",
+      "hint": "Empty: as Claude Code loads them. \"all\", or the names to load, one per line."
+    },
+    {
+      "key": "strictMcp",
+      "label": "Only the MCP servers listed here",
+      "type": "toggle",
+      "section": "Extensions",
+      "default": "false",
+      "hint": "Ignores .mcp.json, user settings and plugins for MCP servers (--strict-mcp-config); only \"Additional MCP servers\" apply. /mcp in the chat shows their state."
+    },
+    {
+      "key": "hooks",
+      "label": "Hooks",
+      "type": "textarea",
+      "section": "Extensions",
+      "rows": 4,
+      "default": "",
+      "placeholder": "PreToolUse | Bash | ./scripts/check-command.sh\nPostToolUse | Edit | ./scripts/after-edit.sh\nStop | | ./scripts/notify.sh",
+      "hint": "One per line: Event | matcher | shell command. Events: PreToolUse, PostToolUse, UserPromptSubmit, Stop, SubagentStop, SessionStart, Notification, PreCompact. Matcher: tool name or regex (empty = all). Event JSON arrives on stdin; exit code 2 blocks (stderr is the reason) and is shown in the chat. Hooks of .claude/settings.json run too."
     },
     {
       "key": "userSettings",
@@ -292,6 +417,16 @@
       "hint": "Like \"mcpServers\" in .mcp.json. The servers from the Claude Code settings apply anyway."
     },
     {
+      "key": "betas",
+      "label": "Beta features",
+      "type": "textarea",
+      "section": "Advanced",
+      "rows": 2,
+      "default": "",
+      "placeholder": "context-1m-2025-08-07",
+      "hint": "Beta headers (--betas), one per line. Only for API-key accounts."
+    },
+    {
       "key": "env",
       "label": "Environment variables",
       "type": "textarea",
@@ -300,13 +435,43 @@
       "default": "",
       "placeholder": "ANTHROPIC_BASE_URL=https://…\nHTTPS_PROXY=http://proxy:3128",
       "hint": "KEY=VALUE, one per line."
+    },
+    {
+      "key": "quickActions",
+      "label": "Quick actions",
+      "type": "textarea",
+      "section": "Customize",
+      "rows": 8,
+      "default": "Explain selection | Explain what this code does and why:\\n\\n{{selection}}\nFix problems in file | Find and fix the problems in {{file}}. Check the diagnostics first and keep the changes minimal.\nWrite tests | Write tests for {{file}} (focus on this selection if there is one):\\n\\n{{selection}}\\n\\nMatch the project's test style and run them.\nReview diff | Review my uncommitted changes (git diff). Report bugs, risks and unclear code by severity.\nCommit message | Look at the staged changes (git diff --staged) and write a concise commit message. Do not commit.",
+      "placeholder": "Label | prompt",
+      "hint": "Buttons above the message box, one per line: Label | prompt. {{selection}}, {{file}} and {{clipboard}} are filled in; \\n is a line break; lines starting with # are ignored."
+    },
+    {
+      "key": "customCommands",
+      "label": "Commands",
+      "type": "textarea",
+      "section": "Customize",
+      "rows": 9,
+      "default": "review | Review the uncommitted changes | Review the current changes (git diff) for bugs, missing tests and unclear names. Extra focus: $ARGUMENTS\nexplain | Explain a file or topic | Explain $ARGUMENTS in this project. Without an argument, explain {{file}}.\ntests | Write tests | Write tests for $ARGUMENTS (without an argument: for {{file}}). Match the project's test style and run them.\nplan | Plan without changing anything | Make a step-by-step plan for: $ARGUMENTS. Read what you need, but change nothing.\nremember | Add a note to CLAUDE.md | Add the following to the project's CLAUDE.md (create it if missing), short and in the file's existing style: $ARGUMENTS\nmemory | Summarize the loaded CLAUDE.md files | List the instructions from every CLAUDE.md you have loaded (user and project), grouped by file.",
+      "placeholder": "name | description | prompt",
+      "hint": "Slash commands of your own, one per line: name | description | prompt. $ARGUMENTS (or {{args}}) is what follows the command; {{selection}}, {{file}} and {{clipboard}} work too. Claude Code's own commands and those from .claude/commands appear next to them."
+    },
+    {
+      "key": "profiles",
+      "label": "Profiles",
+      "type": "textarea",
+      "section": "Customize",
+      "rows": 6,
+      "default": "Plan (Opus, high) | mode=plan | model=opus | effort=high\nQuick edit (Sonnet) | mode=acceptEdits | model=sonnet | effort=low\nRead-only review | mode=plan | model=sonnet | effort=medium | toolset=readonly\nSandboxed autonomy | mode=acceptEdits | sandbox=on-auto",
+      "placeholder": "Label | mode=plan | model=opus | effort=high",
+      "hint": "One choice sets mode, model, effort and any extra setting of this extension by its key (toolset=readonly, sandbox=on, thinking=adaptive …) together. One per line: Label | key=value | …"
     }
   ],
   "agents": [
     {
       "id": "claude",
       "name": "Claude Code",
-      "description": "Ask Claude about your project: explain code, find bugs, make changes. Every action asks for your permission first.",
+      "description": "Ask Claude about your project: explain code, find bugs, make changes. Every action asks for your permission first. Compact, rewind, fork and export conversations; subagents, hooks, plugins and skills.",
       "icon": "Cc",
       "location": "right",
       "images": true,
@@ -330,6 +495,11 @@
           "description": "Plan only, change nothing"
         },
         {
+          "id": "dontAsk",
+          "label": "Only allowed",
+          "description": "Never asks: whatever the allow rules do not cover is denied"
+        },
+        {
           "id": "bypassPermissions",
           "label": "No prompts",
           "description": "Runs everything without asking — must be enabled in the settings"
@@ -340,7 +510,20 @@
         "Find possible bugs in the open file.",
         "Write tests for the current selection.",
         "Review my uncommitted changes."
-      ]
+      ],
+      "capabilities": {
+        "compact": true,
+        "rewind": true,
+        "fork": true,
+        "rename": true,
+        "delete": true,
+        "export": true,
+        "usage": true
+      },
+      "systemPrompt": true,
+      "quickActionsSetting": "quickActions",
+      "customCommandsSetting": "customCommands",
+      "profilesSetting": "profiles"
     }
   ]
 }

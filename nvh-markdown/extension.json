@@ -1,0 +1,111 @@
+{
+  "id": "addon.nvh-markdown",
+  "name": "nvh-markdown",
+  "version": "1.1.0",
+  "description": "Novus nvh-markdown: .nvmd highlighting (Markdown, frontmatter, <?nv ?> header, {expr}, template blocks, components, containers), snippets, a project template and commands for the .nvmd to .nvh generator.",
+  "author": "Lumen",
+  "icon": "Nm",
+  "color": "#7c5cff",
+  "category": "language",
+  "license": "MIT",
+  "keywords": [
+    "novus",
+    "nvh",
+    "markdown",
+    "nvmd"
+  ],
+  "minAppVersion": "0.7.0",
+  "settings": [
+    {
+      "key": "novusc",
+      "label": "novusc path",
+      "type": "text",
+      "default": "novusc",
+      "placeholder": "novusc",
+      "section": "Generator",
+      "hint": "The Novus compiler that runs the generator."
+    },
+    {
+      "key": "generator",
+      "label": "Generator (nvmd.nv)",
+      "type": "path",
+      "pathKind": "file",
+      "default": "",
+      "section": "Generator",
+      "hint": "Empty: nvh-markdown/nvmd.nv in or next to the project, the target of its replace line, or the copy fetched by novusc deps (~/.novus/deps)."
+    },
+    {
+      "key": "folders",
+      "label": "Content folders",
+      "type": "text",
+      "default": ".",
+      "placeholder": "content, docs",
+      "section": "Generator",
+      "hint": "Comma-separated folders or files that Generate all, Clean, Watch and Check work on, relative to the project."
+    },
+    {
+      "key": "main",
+      "label": "Main file for Check",
+      "type": "text",
+      "default": "main.nv",
+      "section": "Generator",
+      "hint": "The program that Check hands to novusc check after generating."
+    },
+    {
+      "key": "force",
+      "label": "Regenerate everything",
+      "type": "toggle",
+      "default": "false",
+      "section": "Generator",
+      "hint": "Passes --force: write every .nvh, not only what changed."
+    },
+    {
+      "key": "generateOnSave",
+      "label": "Generate on save",
+      "type": "toggle",
+      "default": "false",
+      "section": "Automation",
+      "hint": "Writes the .nvh next to a .nvmd file each time it is saved."
+    },
+    {
+      "key": "liveCheck",
+      "label": "Check while typing",
+      "type": "toggle",
+      "default": "false",
+      "section": "Automation",
+      "hint": "Translates the text of the open .nvmd file after each pause and shows generator errors as problems. Starts novusc each time."
+    }
+  ],
+  "commands": [
+    {
+      "id": "generate-file",
+      "title": "nvmd: Generate .nvh for this file",
+      "category": "nvh-markdown"
+    },
+    {
+      "id": "generate-all",
+      "title": "nvmd: Generate all .nvmd in the project",
+      "category": "nvh-markdown"
+    },
+    {
+      "id": "translate",
+      "title": "nvmd: Show the generated .nvh of this file",
+      "category": "nvh-markdown"
+    },
+    {
+      "id": "check",
+      "title": "nvmd: Generate and check the program",
+      "category": "nvh-markdown"
+    },
+    {
+      "id": "watch",
+      "title": "nvmd: Watch and regenerate in a terminal",
+      "category": "nvh-markdown"
+    },
+    {
+      "id": "clean",
+      "title": "nvmd: Remove generated .nvh files",
+      "category": "nvh-markdown"
+    }
+  ]
+}

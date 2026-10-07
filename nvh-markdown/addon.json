@@ -1,0 +1,525 @@
+{
+  "languages": [
+    {
+      "id": "nvmd",
+      "name": "Novus Markdown",
+      "extensions": [
+        ".nvmd"
+      ],
+      "icon": "Nm",
+      "color": "#7c5cff",
+      "priority": 10,
+      "comments": {
+        "block": [
+          "<!--",
+          "-->"
+        ]
+      },
+      "autoClose": [
+        {
+          "open": "<?nv",
+          "before": " ",
+          "after": " ?>"
+        },
+        {
+          "open": "<?=",
+          "before": " ",
+          "after": "?>"
+        }
+      ],
+      "closeBrackets": [
+        "(",
+        "[",
+        "{",
+        "\"",
+        "`"
+      ],
+      "wordPattern": "[@$]?[A-Za-z_\\u00C0-\\u1FFF][A-Za-z0-9_\\u00C0-\\u1FFF]*(?:[-:][A-Za-z_\\u00C0-\\u1FFF][A-Za-z0-9_\\u00C0-\\u1FFF]*)*-?|\\d+(?:\\.\\d+)?",
+      "codeWordPattern": "[$@]?[A-Za-z_][A-Za-z0-9_]*|\\d+(?:\\.\\d+)?",
+      "syntaxContext": "nvmd",
+      "completions": [
+        "prop",
+        "ref",
+        "import",
+        "{#if}",
+        "{:else}",
+        "{/if}",
+        "{#for}",
+        "{/for}",
+        "{@html }",
+        "Callout",
+        "CodeBlock",
+        "Toc",
+        "Markdown",
+        ":::note",
+        ":::tip",
+        ":::warning",
+        ":::danger",
+        "markdown.render",
+        "markdown.headings",
+        "markdown.frontmatter",
+        "markdown.slug",
+        "markdown.highlight",
+        "markdown.text",
+        "markdown.body",
+        "markdown.fill"
+      ],
+      "snippets": [
+        {
+          "label": "note",
+          "detail": "Container: note",
+          "body": ":::note ${Title}\n$0\n:::",
+          "scope": [
+            "nvmd_text"
+          ]
+        },
+        {
+          "label": "tip",
+          "detail": "Container: tip",
+          "body": ":::tip ${Title}\n$0\n:::",
+          "scope": [
+            "nvmd_text"
+          ]
+        },
+        {
+          "label": "warning",
+          "detail": "Container: warning",
+          "body": ":::warning ${Title}\n$0\n:::",
+          "scope": [
+            "nvmd_text"
+          ]
+        },
+        {
+          "label": "danger",
+          "detail": "Container: danger",
+          "body": ":::danger ${Title}\n$0\n:::",
+          "scope": [
+            "nvmd_text"
+          ]
+        },
+        {
+          "label": "callout",
+          "detail": "<Callout> component",
+          "body": "<Callout type=\"${note}\" title=\"${Title}\">\n$0\n</Callout>",
+          "scope": [
+            "nvmd_text"
+          ]
+        },
+        {
+          "label": "codeblock",
+          "detail": "<CodeBlock> component",
+          "body": "<CodeBlock language=\"${nv}\" code={${code}} />$0",
+          "scope": [
+            "nvmd_text"
+          ]
+        },
+        {
+          "label": "toc",
+          "detail": "<Toc> component",
+          "body": "<Toc headings={markdown.headings(${source})} minLevel={2} maxLevel={3} />$0",
+          "scope": [
+            "nvmd_text"
+          ]
+        },
+        {
+          "label": "markdown",
+          "detail": "<Markdown> component",
+          "body": "<Markdown source={${source}} />$0",
+          "scope": [
+            "nvmd_text"
+          ]
+        },
+        {
+          "label": "comp",
+          "detail": "Component tag",
+          "body": "<${Component} ${prop}={${value}} />$0",
+          "scope": [
+            "nvmd_text"
+          ]
+        },
+        {
+          "label": "fm",
+          "detail": "Frontmatter",
+          "body": "---\ntitle: ${Title}\ndescription: ${Description}\n---\n$0",
+          "scope": [
+            "nvmd_text"
+          ]
+        },
+        {
+          "label": "nv",
+          "detail": "<?nv ?> header",
+          "body": "<?nv\n$0\n?>",
+          "scope": [
+            "nvmd_text"
+          ]
+        },
+        {
+          "label": "header",
+          "detail": "Header with import and prop",
+          "body": "<?nv\nimport ${strings}\nprop ${string} ${name} = \"${value}\"\n?>\n\n$0",
+          "scope": [
+            "nvmd_text"
+          ]
+        },
+        {
+          "label": "import",
+          "detail": "Import of the components",
+          "body": "import \"github.com/ezTxmMC/nvh-markdown/components\"",
+          "scope": [
+            "nvh_block"
+          ]
+        },
+        {
+          "label": "prop",
+          "detail": "prop",
+          "body": "prop ${string} ${name} = ${\"\"}",
+          "scope": [
+            "nvh_block"
+          ]
+        },
+        {
+          "label": "ref",
+          "detail": "ref",
+          "body": "ref ${integer} ${count} = ${0}",
+          "scope": [
+            "nvh_block"
+          ]
+        },
+        {
+          "label": "expr",
+          "detail": "{expr}",
+          "body": "{${expression}}$0",
+          "scope": [
+            "nvmd_text"
+          ]
+        },
+        {
+          "label": "if",
+          "detail": "{#if}",
+          "body": "{#if ${condition}}\n$0\n{:else}\n\n{/if}",
+          "scope": [
+            "nvmd_text"
+          ]
+        },
+        {
+          "label": "for",
+          "detail": "{#for}",
+          "body": "{#for ${item}, ${i} in ${list}}\n- {${item}}\n{/for}",
+          "scope": [
+            "nvmd_text"
+          ]
+        },
+        {
+          "label": "html",
+          "detail": "{@html}",
+          "body": "{@html ${expression}}$0",
+          "scope": [
+            "nvmd_text"
+          ]
+        },
+        {
+          "label": "table",
+          "detail": "Table",
+          "body": "| ${Column} | ${Column} |\n| --- | --- |\n| $0 | |",
+          "scope": [
+            "nvmd_text"
+          ]
+        },
+        {
+          "label": "task",
+          "detail": "Task list",
+          "body": "- [ ] ${Task}\n- [x] ${Done}",
+          "scope": [
+            "nvmd_text"
+          ]
+        },
+        {
+          "label": "code-nv",
+          "detail": "Code fence: Novus",
+          "body": "```nv\n$0\n```",
+          "scope": [
+            "nvmd_text"
+          ]
+        },
+        {
+          "label": "code-nvh",
+          "detail": "Code fence: nvh",
+          "body": "```nvh\n$0\n```",
+          "scope": [
+            "nvmd_text"
+          ]
+        },
+        {
+          "label": "code-html",
+          "detail": "Code fence: HTML",
+          "body": "```html\n$0\n```",
+          "scope": [
+            "nvmd_text"
+          ]
+        },
+        {
+          "label": "code-sh",
+          "detail": "Code fence: Shell",
+          "body": "```sh\n$0\n```",
+          "scope": [
+            "nvmd_text"
+          ]
+        },
+        {
+          "label": "code-json",
+          "detail": "Code fence: JSON",
+          "body": "```json\n$0\n```",
+          "scope": [
+            "nvmd_text"
+          ]
+        },
+        {
+          "label": "code-c",
+          "detail": "Code fence: C",
+          "body": "```c\n$0\n```",
+          "scope": [
+            "nvmd_text"
+          ]
+        },
+        {
+          "label": "code-js",
+          "detail": "Code fence: JavaScript",
+          "body": "```js\n$0\n```",
+          "scope": [
+            "nvmd_text"
+          ]
+        },
+        {
+          "label": "code-ts",
+          "detail": "Code fence: TypeScript",
+          "body": "```ts\n$0\n```",
+          "scope": [
+            "nvmd_text"
+          ]
+        },
+        {
+          "label": "code-toml",
+          "detail": "Code fence: TOML",
+          "body": "```toml\n$0\n```",
+          "scope": [
+            "nvmd_text"
+          ]
+        },
+        {
+          "label": "code-yaml",
+          "detail": "Code fence: YAML",
+          "body": "```yaml\n$0\n```",
+          "scope": [
+            "nvmd_text"
+          ]
+        },
+        {
+          "label": "code",
+          "detail": "Code fence",
+          "body": "```${nv}\n$0\n```",
+          "scope": [
+            "nvmd_text"
+          ]
+        }
+      ],
+      "indentUnit": 2,
+      "tokenizer": "nvmd"
+    }
+  ],
+  "themes": [],
+  "commands": [],
+  "events": [],
+  "templates": [
+    {
+      "id": "nvh-markdown-site",
+      "name": "nvh-markdown page",
+      "description": "A Novus project with a .nvmd page, rendered to HTML with nvh-markdown.",
+      "languageId": "nvmd",
+      "kindId": "nvh-markdown",
+      "icon": "Nm",
+      "color": "#7c5cff",
+      "fields": [
+        {
+          "id": "module",
+          "label": "Module path",
+          "default": "github.com/user/site",
+          "pattern": "[\\w.\\-/]+",
+          "mono": true,
+          "section": "Project"
+        },
+        {
+          "id": "version",
+          "label": "Version",
+          "default": "0.1.0",
+          "pattern": "\\d+\\.\\d+\\.\\d+(?:[-+][0-9A-Za-z.-]+)?",
+          "mono": true,
+          "section": "Project"
+        }
+      ],
+      "open": "Page.nvmd",
+      "setup": [
+        {
+          "label": "Fetch the dependencies",
+          "command": "novusc",
+          "args": [
+            "deps"
+          ]
+        }
+      ],
+      "files": [
+        {
+          "path": "project.nv",
+          "content": "project \"{{module}}\"\nversion \"{{version}}\"\nmain \"main.nv\"\noutput \"{{slug}}\"\n\nrequire \"github.com/ezTxmMC/nvh-markdown\" \"latest\"\n// replace \"github.com/ezTxmMC/nvh-markdown\" \"../nvh-markdown\"     // a local checkout\n"
+        },
+        {
+          "path": "main.nv",
+          "content": "package main\n\nimport web\nimport @Page\n\n// Page.nvmd becomes Page.nvh (nvmd: Generate .nvh for this file), then:\n//   novusc run main.nv\nmethod main {\n    println web.renderHtml(Page())\n}\n"
+        },
+        {
+          "path": "Page.nvmd",
+          "content": "---\ntitle: {{name}}\n---\n<?nv\nimport strings\n?>\n\n# {title}\n\nPlain **Markdown** with Novus in it: {strings.upper(title)}.\n\n{#for item in [\"one\", \"two\"]}\n- {item}\n{/for}\n\n<Callout type=\"tip\" title=\"Components\">\nChildren are **Markdown** as well.\n</Callout>\n\n```nv\nprintln \"braces { } in code stay literal\"\n```\n"
+        },
+        {
+          "path": "components/Callout.nvh",
+          "content": "<?nv\nimport strings\n\nprop string type = \"note\"\nprop string title = \"\"\n\nmethod heading(): string {\n    if (title != \"\") {\n        return title\n    }\n    return strings.capitalize(type)\n}\n?>\n<aside class=\"callout callout-{type}\" role=\"note\">\n    <p class=\"callout-title\">{heading()}</p>\n    <div class=\"callout-body\"><slot /></div>\n</aside>\n"
+        },
+        {
+          "path": ".gitignore",
+          "content": "# generated from Page.nvmd\nPage.nvh\n"
+        },
+        {
+          "path": "README.md",
+          "content": "# {{name}}\n\nA Novus project that uses [nvh-markdown](https://github.com/ezTxmMC/nvh-markdown).\n\n```sh\nnovusc deps\n# in Lumen: command \"nvmd: Generate .nvh for this file\" (Page.nvmd -> Page.nvh)\nnovusc run main.nv\n```\n"
+        }
+      ]
+    }
+  ],
+  "projectKinds": [
+    {
+      "id": "nvh-markdown",
+      "name": "Novus + nvh-markdown",
+      "icon": "Nm",
+      "color": "#7c5cff",
+      "markers": [
+        "project.nv"
+      ],
+      "rules": [
+        {
+          "file": "project.nv",
+          "pattern": "github\\.com/ezTxmMC/nvh-markdown"
+        }
+      ],
+      "priority": 20,
+      "languageIds": [
+        "nvmd",
+        "novus"
+      ],
+      "tasks": [
+        {
+          "id": "run",
+          "label": "novusc run",
+          "command": "novusc",
+          "args": [
+            "run"
+          ],
+          "group": "run"
+        },
+        {
+          "id": "check",
+          "label": "novusc check",
+          "command": "novusc",
+          "args": [
+            "check"
+          ],
+          "group": "test"
+        },
+        {
+          "id": "deps",
+          "label": "novusc deps",
+          "command": "novusc",
+          "args": [
+            "deps"
+          ],
+          "group": "build"
+        }
+      ],
+      "facts": [
+        {
+          "label": "Module",
+          "file": "project.nv",
+          "pattern": "^project\\s+\"([^\"]+)\"",
+          "role": "name"
+        },
+        {
+          "label": "Version",
+          "file": "project.nv",
+          "pattern": "^version\\s+\"([^\"]+)\"",
+          "role": "version"
+        },
+        {
+          "label": "nvh-markdown",
+          "file": "project.nv",
+          "pattern": "^require\\s+\"github\\.com/ezTxmMC/nvh-markdown\"(?:\\s+\"([^\"]+)\")?"
+        }
+      ],
+      "buildFile": "project.nv",
+      "dependencyScan": {
+        "file": "project.nv",
+        "pattern": "^require\\s+\"([^\"]+)\"(?:\\s+\"([^\"]+)\")?"
+      },
+      "sourceRoots": [
+        "."
+      ]
+    }
+  ],
+  "snippets": [
+    {
+      "languageId": "nvh",
+      "label": "callout",
+      "detail": "<Callout> component (nvh-markdown)",
+      "body": "<Callout type=\"${note}\" title=\"${Title}\">\n$0\n</Callout>",
+      "files": [
+        "*.nvh"
+      ],
+      "scope": [
+        "nvh_template"
+      ]
+    },
+    {
+      "languageId": "nvh",
+      "label": "codeblock",
+      "detail": "<CodeBlock> component (nvh-markdown)",
+      "body": "<CodeBlock language=\"${nv}\" code={${code}} />$0",
+      "files": [
+        "*.nvh"
+      ],
+      "scope": [
+        "nvh_template"
+      ]
+    },
+    {
+      "languageId": "nvh",
+      "label": "toc",
+      "detail": "<Toc> component (nvh-markdown)",
+      "body": "<Toc headings={markdown.headings(${source})} minLevel={2} maxLevel={3} />$0",
+      "files": [
+        "*.nvh"
+      ],
+      "scope": [
+        "nvh_template"
+      ]
+    },
+    {
+      "languageId": "nvh",
+      "label": "markdown",
+      "detail": "<Markdown> component (nvh-markdown)",
+      "body": "<Markdown source={${source}} />$0",
+      "files": [
+        "*.nvh"
+      ],
+      "scope": [
+        "nvh_template"
+      ]
+    }
+  ]
+}

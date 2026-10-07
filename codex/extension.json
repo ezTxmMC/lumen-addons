@@ -1,8 +1,8 @@
 {
   "id": "ext.codex",
   "name": "ChatGPT Codex",
-  "version": "2.1.2",
-  "description": "OpenAI Codex as a chat agent: models from the Codex CLI or its model cache, reasoning effort per model, sandbox modes, web search, resumable sessions, images and plan. Plus tasks and an AGENTS.md template. Ships executable code.",
+  "version": "2.2.0",
+  "description": "OpenAI Codex as a chat agent: models and effort from the Codex CLI, sandbox modes, /review, /init, /mcp and your own prompts, session fork, export and delete, context meter, profiles and quick actions. Ships executable code.",
   "author": "Lumen",
   "icon": "Cx",
   "color": "#10a37f",
@@ -16,7 +16,7 @@
     "agent",
     "cli"
   ],
-  "minAppVersion": "0.5.2",
+  "minAppVersion": "0.7.0",
   "settings": [
     {
       "key": "codexPath",
@@ -35,7 +35,7 @@
       "section": "Program",
       "default": "",
       "placeholder": "none",
-      "hint": "A profile from ~/.codex/config.toml that applies to every message."
+      "hint": "A profile that applies to every message: a [profiles.<name>] table in ~/.codex/config.toml or a ~/.codex/<name>.config.toml file. /profiles in the chat lists what Codex found."
     },
     {
       "key": "model",
@@ -130,6 +130,10 @@
         {
           "value": "xhigh",
           "label": "Very high"
+        },
+        {
+          "value": "max",
+          "label": "Maximum"
         }
       ],
       "hint": "Applies while no effort is chosen in the chat. In the chat it can be set per model — only the levels the model supports are offered."
@@ -196,6 +200,34 @@
       "default": "false"
     },
     {
+      "key": "customInstructions",
+      "label": "Instructions for every chat",
+      "type": "textarea",
+      "section": "Instructions",
+      "rows": 4,
+      "default": "",
+      "placeholder": "Answer briefly. Prefer small, reviewable changes.",
+      "hint": "Added to AGENTS.md as developer instructions. A system prompt set for one chat is added after it."
+    },
+    {
+      "key": "instructionsVia",
+      "label": "Hand instructions to Codex",
+      "type": "select",
+      "section": "Instructions",
+      "default": "config",
+      "choices": [
+        {
+          "value": "config",
+          "label": "As developer_instructions (-c)"
+        },
+        {
+          "value": "prompt",
+          "label": "In front of each message"
+        }
+      ],
+      "hint": "Exec mode has no system-prompt flag. \"As developer_instructions\" uses the config key of that name; use \"In front of each message\" if your Codex version ignores it."
+    },
+    {
       "key": "webSearch",
       "label": "Web search",
       "type": "select",
@@ -218,7 +250,8 @@
           "value": "disabled",
           "label": "Off"
         }
-      ]
+      ],
+      "hint": "Sets web_search for the session (`--search` exists only in interactive Codex)."
     },
     {
       "key": "networkAccess",
@@ -243,12 +276,20 @@
       ]
     },
     {
+      "key": "excludeTmp",
+      "label": "Keep /tmp and $TMPDIR out of the writable roots",
+      "type": "toggle",
+      "section": "Tools",
+      "default": "false",
+      "hint": "In \"In project\" mode Codex may also write to the temporary folders; this switches that off (sandbox_workspace_write.exclude_*)."
+    },
+    {
       "key": "approvalPolicy",
-      "label": "Approval policy",
+      "label": "Approval policy (all modes)",
       "type": "select",
       "section": "Permissions",
       "default": "never",
-      "hint": "Codex cannot ask questions in the chat — what it may do is set by the sandbox mode. \"Never ask\" keeps Codex from waiting for an answer.",
+      "hint": "Codex cannot ask questions in the chat — what it may do is set by the sandbox mode. \"Never ask\" keeps Codex from waiting for an answer. The per-mode settings below override this.",
       "choices": [
         {
           "value": "never",
@@ -269,6 +310,93 @@
         {
           "value": "auto",
           "label": "As in config.toml"
+        }
+      ]
+    },
+    {
+      "key": "approvalReadOnly",
+      "label": "Approvals in \"Read only\"",
+      "type": "select",
+      "section": "Permissions",
+      "default": "default",
+      "choices": [
+        {
+          "value": "default",
+          "label": "As the general policy"
+        },
+        {
+          "value": "never",
+          "label": "Never ask"
+        },
+        {
+          "value": "on-failure",
+          "label": "On failure"
+        },
+        {
+          "value": "on-request",
+          "label": "On the model's request"
+        },
+        {
+          "value": "untrusted",
+          "label": "For untrusted commands"
+        }
+      ]
+    },
+    {
+      "key": "approvalWorkspace",
+      "label": "Approvals in \"In project\"",
+      "type": "select",
+      "section": "Permissions",
+      "default": "default",
+      "choices": [
+        {
+          "value": "default",
+          "label": "As the general policy"
+        },
+        {
+          "value": "never",
+          "label": "Never ask"
+        },
+        {
+          "value": "on-failure",
+          "label": "On failure"
+        },
+        {
+          "value": "on-request",
+          "label": "On the model's request"
+        },
+        {
+          "value": "untrusted",
+          "label": "For untrusted commands"
+        }
+      ]
+    },
+    {
+      "key": "approvalFull",
+      "label": "Approvals in \"Full access\"",
+      "type": "select",
+      "section": "Permissions",
+      "default": "default",
+      "choices": [
+        {
+          "value": "default",
+          "label": "As the general policy"
+        },
+        {
+          "value": "never",
+          "label": "Never ask"
+        },
+        {
+          "value": "on-failure",
+          "label": "On failure"
+        },
+        {
+          "value": "on-request",
+          "label": "On the model's request"
+        },
+        {
+          "value": "untrusted",
+          "label": "For untrusted commands"
         }
       ]
     },
@@ -304,8 +432,8 @@
       "section": "Advanced",
       "rows": 3,
       "default": "",
-      "placeholder": "model_verbosity=\"low\"\nhide_agent_reasoning=true",
-      "hint": "One key=value per line in TOML format, as with `codex -c`."
+      "placeholder": "# model_verbosity=\"low\"\nsandbox_workspace_write.network_access=true\nshell_environment_policy.inherit=\"all\"",
+      "hint": "One key=value per line in TOML format, as with `codex -c`. Lines starting with # are comments; lines that are not key=value are ignored (and reported in the chat)."
     },
     {
       "key": "env",
@@ -316,6 +444,91 @@
       "default": "",
       "placeholder": "OPENAI_API_KEY=…\nHTTPS_PROXY=http://proxy:3128",
       "hint": "KEY=VALUE, one per line."
+    },
+    {
+      "key": "ephemeral",
+      "label": "Ephemeral sessions",
+      "type": "toggle",
+      "section": "Advanced",
+      "default": "false",
+      "hint": "--ephemeral: Codex keeps no session file. The chat cannot be resumed later, and Fork and Export do not work."
+    },
+    {
+      "key": "outputSchema",
+      "label": "Reply schema (--output-schema)",
+      "type": "path",
+      "pathKind": "file",
+      "section": "Advanced",
+      "default": "",
+      "placeholder": "none",
+      "hint": "A JSON Schema file; Codex's final answer then follows that shape."
+    },
+    {
+      "key": "features",
+      "label": "Feature flags",
+      "type": "textarea",
+      "section": "Advanced",
+      "rows": 2,
+      "default": "",
+      "placeholder": "unified_exec\n-web_search_request",
+      "hint": "One per line: a name enables the feature (--enable), a leading - disables it (--disable). `codex features list` shows them."
+    },
+    {
+      "key": "oss",
+      "label": "Use a local model (--oss)",
+      "type": "toggle",
+      "section": "Advanced",
+      "default": "false",
+      "hint": "Runs against a local open-source provider instead of OpenAI."
+    },
+    {
+      "key": "localProvider",
+      "label": "Local provider",
+      "type": "select",
+      "section": "Advanced",
+      "default": "default",
+      "choices": [
+        {
+          "value": "default",
+          "label": "As in config.toml"
+        },
+        {
+          "value": "ollama",
+          "label": "Ollama"
+        },
+        {
+          "value": "lmstudio",
+          "label": "LM Studio"
+        }
+      ],
+      "when": "oss=true"
+    },
+    {
+      "key": "quickActionsText",
+      "label": "Quick actions",
+      "type": "textarea",
+      "section": "Customize",
+      "rows": 7,
+      "default": "# Label | prompt   ({{selection}}, {{file}}, {{clipboard}}; \\n is a line break)\nExplain selection | Explain {{selection}} from {{file}} step by step.\nFix this file | Find and fix bugs in {{file}}. Explain each change briefly.\nWrite tests | Write tests for {{selection}} in {{file}} following the project's conventions, then run them.\nReview changes | Review the uncommitted changes in this repository for bugs, risky changes and missing tests.\nCommit message | Read the staged changes (git diff --staged) and write a concise conventional commit message. Do not commit.",
+      "hint": "Buttons above the message box. One per line: Label | prompt."
+    },
+    {
+      "key": "customCommandsText",
+      "label": "Slash commands",
+      "type": "textarea",
+      "section": "Customize",
+      "rows": 7,
+      "default": "# name | description | prompt   ($ARGUMENTS or {{args}} is what follows the command)\nexplain | Explain code or a concept | Explain $ARGUMENTS in simple terms, with an example from this project.\ntests | Write tests | Write tests for $ARGUMENTS and run them. Follow the existing test style.\nfix | Fix a problem | Find the cause of this problem and fix it: $ARGUMENTS\ndocs | Document code | Write or improve documentation comments for $ARGUMENTS.\nrefactor | Refactor | Refactor $ARGUMENTS for readability without changing behaviour; run the tests afterwards.",
+      "hint": "One per line: name | description | prompt. /review, /init, /status, /mcp and your ~/.codex/prompts are offered besides."
+    },
+    {
+      "key": "profilesText",
+      "label": "Profiles",
+      "type": "textarea",
+      "section": "Customize",
+      "rows": 5,
+      "default": "# Label | mode=… | model=… | effort=… | anySettingKey=value\nQuick | mode=workspace-write | effort=low | reasoningSummary=none\nOffline | mode=workspace-write | networkAccess=false | webSearch=disabled\nFull access (needs the setting) | mode=danger-full-access | effort=medium",
+      "hint": "Presets for mode, model, effort and any setting of this extension. Full access works only when it is allowed above."
     }
   ],
   "agents": [
@@ -350,7 +563,35 @@
         "Explain the structure of this project.",
         "Find possible bugs in the open file.",
         "Write tests for the current selection.",
-        "Create an AGENTS.md for this project."
+        "/review",
+        "/init"
+      ],
+      "capabilities": {
+        "fork": true,
+        "rename": true,
+        "delete": true,
+        "export": true,
+        "usage": true
+      },
+      "systemPrompt": true,
+      "quickActionsSetting": "quickActionsText",
+      "customCommandsSetting": "customCommandsText",
+      "profilesSetting": "profilesText",
+      "profiles": [
+        {
+          "id": "careful",
+          "label": "Careful",
+          "mode": "read-only",
+          "effort": "high",
+          "settings": {
+            "approvalPolicy": "never"
+          }
+        },
+        {
+          "id": "build",
+          "label": "Build",
+          "mode": "workspace-write"
+        }
       ]
     }
   ]

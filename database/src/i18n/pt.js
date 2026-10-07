@@ -20,6 +20,7 @@ export default {
     redis: 'Chaves e valores', mongo: 'Documentos e coleções',
   },
   status: { idle: 'Não conectado', connecting: 'Conectando …', connected: 'Conectado', error: 'Falha na conexão' },
+  scope: { app: 'Em todo lugar (este aplicativo)', project: 'Projeto (compartilhada via .lumen/)', tag: 'Projeto' },
   field: {
     name: 'Nome', file: 'Arquivo', fileHint: 'Caminho absoluto ou relativo à pasta aberta.', host: 'Host', port: 'Porta',
     user: 'Usuário', password: 'Senha', passwordKeep: 'inalterada', database: 'Banco de dados',
@@ -34,6 +35,7 @@ export default {
     urlHint: 'Opcional — substitui os campos acima que ela informa. A senha continua no campo de senha.',
     ssl: 'TLS', sslMode: { off: 'Desativado', require: 'Criptografado, certificado não verificado', verify: 'Criptografado e verificado' },
     sslCa: 'Certificado CA (arquivo)', readOnly: 'Somente leitura', savePassword: 'Salvar a senha no chaveiro do sistema',
+    scope: 'Disponível em', scopeHint: 'As conexões do projeto são salvas, sem senhas, em .lumen/database-connections.json da pasta aberta.',
   },
   connection: {
     pickType: 'Tipo de banco de dados', addTitle: 'Nova conexão {type}', editTitle: 'Editar “{name}”', save: 'Salvar',

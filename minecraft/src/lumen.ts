@@ -14,7 +14,7 @@
  * the window loads the code; tests set a fake.
  */
 
-import type { RendererApi } from '../../../src/core/extensions/renderer-api';
+import type { RendererApi } from '../../../src/core/extensions/integration/renderer-api';
 import { Catalog, type Net, type Store } from './catalog';
 import { MESSAGES } from './messages';
 
